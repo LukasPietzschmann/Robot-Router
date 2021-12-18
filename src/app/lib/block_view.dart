@@ -1,6 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 enum BlockType { t_action, t_passive, t_event, t_control }
+
+Future<Block?> selectBlockFromList(BuildContext context) {
+  return showModalBottomSheet<Block>(
+    context: context,
+    isDismissible: true,
+    enableDrag: false,
+    shape: ContinuousRectangleBorder(
+      borderRadius: BorderRadius.circular(20),
+    ),
+    builder: (BuildContext context) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+                child: ListView(
+                    padding: const EdgeInsets.all(10),
+                    children: Block.allBlocks().map((List<Block> blocks) {
+                      return Wrap(direction: Axis.vertical, children: <Widget>[
+                        Text(blocks[0].typeName),
+                        ...blocks.map((Block block) => TextButton(
+                            onPressed: () => Navigator.pop(context, block),
+                            child: Text('    ' + block.name)))
+                      ]);
+                    }).toList()))
+          ],
+        ),
+      );
+    },
+  );
+}
 abstract class Block extends StatefulWidget {
   const Block({Key? key}) : super(key: key);
 
