@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:robot_router/custom_blocks/block_with_subblock.dart';
 import 'package:robot_router/custom_blocks/comment_block.dart';
 import 'package:robot_router/custom_blocks/test_block.dart';
+
 enum BlockType { t_action, t_passive, t_event, t_control }
 
 Future<Block?> selectBlockFromList(BuildContext context) {
@@ -119,6 +121,7 @@ abstract class Block extends StatefulWidget {
     final List<Block> blocks = <Block>[
       const TestBlock(),
       const CommentBlock(),
+      const BlockWithSubblock(),
     ];
     List<List<Block>> result = List<List<Block>>.generate(
         BlockType.values.length, (int index) => <Block>[]);
