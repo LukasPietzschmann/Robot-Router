@@ -32,6 +32,12 @@ Future<Block?> selectBlockFromList(BuildContext context) {
     },
   );
 }
+
+abstract class InputProvider<T> extends StatelessWidget {
+  const InputProvider({required this.onSubmit, Key? key}) : super(key: key);
+
+  final void Function(T result) onSubmit;
+}
 abstract class Block extends StatefulWidget {
   const Block({Key? key}) : super(key: key);
 
