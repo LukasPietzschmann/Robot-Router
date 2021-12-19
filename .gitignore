@@ -19,3 +19,5 @@ app.*.map.json
 .pub/
 .pub-cache/
 pubspec.lock
+
+.vscode/
