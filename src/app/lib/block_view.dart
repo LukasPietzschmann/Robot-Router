@@ -103,6 +103,12 @@ class CappedValueProvider extends InputProvider<String> {
   }
 }
 
+abstract class BlockVisitor<T> {
+  T visitTestBlock(TestBlock testBlock);
+  T visitCommentBlock(CommentBlock commentBlock);
+  T visitBlockWithSubblock(BlockWithSubblock blockWithSubblock);
+}
+
 abstract class Block extends StatefulWidget {
   const Block({Key? key}) : super(key: key);
 
@@ -116,6 +122,8 @@ abstract class Block extends StatefulWidget {
       'Control Block'
     ][type.index];
   }
+
+  T accept<T>(BlockVisitor<T> visitor);
 
   static List<List<Block>> allBlocks() {
     final List<Block> blocks = <Block>[

@@ -14,6 +14,11 @@ class CommentBlock extends Block {
   BlockState createState() => CommentBlockState();
   @override
   BlockType get type => BlockType.t_passive;
+
+  @override
+  T accept<T>(BlockVisitor<T> visitor) {
+    return visitor.visitCommentBlock(this);
+  }
 }
 
 class CommentBlockState extends BlockState {

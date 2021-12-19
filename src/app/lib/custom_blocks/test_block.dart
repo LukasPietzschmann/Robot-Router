@@ -12,6 +12,11 @@ class TestBlock extends Block {
   String get name => 'Test Block';
   @override
   BlockType get type => BlockType.t_action;
+
+  @override
+  T accept<T>(BlockVisitor<T> visitor) {
+    return visitor.visitTestBlock(this);
+  }
 }
 
 class TestBlockState extends BlockState {

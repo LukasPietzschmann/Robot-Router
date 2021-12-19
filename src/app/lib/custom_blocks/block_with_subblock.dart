@@ -12,6 +12,11 @@ class BlockWithSubblock extends Block {
 
   @override
   BlockType get type => BlockType.t_action;
+
+  @override
+  T accept<T>(BlockVisitor<T> visitor) {
+    return visitor.visitBlockWithSubblock(this);
+  }
 }
 
 class BlockWithSubblockState extends BlockState {
