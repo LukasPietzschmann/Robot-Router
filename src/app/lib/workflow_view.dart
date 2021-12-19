@@ -42,10 +42,15 @@ class _WorkflowViewState extends State<WorkflowView> {
                     padding: const EdgeInsets.all(8),
                     child: Card(
                         color: Colors.red,
-                        child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text('Delete ${item.name}    ',
-                                style: const TextStyle(color: Colors.white)))),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Text('Delete ${item.name}',
+                                style: const TextStyle(color: Colors.white)),
+                            const Icon(Icons.delete_forever_rounded,
+                                color: Colors.white)
+                          ],
+                        )),
                   ),
                   onDismissed: (DismissDirection direction) {
                     setState(() {
