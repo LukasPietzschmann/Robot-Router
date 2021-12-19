@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:robot_router/block_view.dart';
+import 'package:robot_router/runtime.dart';
 import 'package:robot_router/workflow.dart';
 
 class WorkflowView extends StatefulWidget {
@@ -112,7 +113,7 @@ class _WorkflowViewState extends State<WorkflowView> {
                   },
                   child: const Text('Add Block')),
               IconButton(
-                onPressed: () {},
+                onPressed: () => Runtime.the().exec(_blocks),
                 icon: const Icon(Icons.send),
                 color: Colors.indigo,
               )
