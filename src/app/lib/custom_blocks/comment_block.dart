@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../block_view.dart';
+import '../input_provider.dart';
 
 class CommentBlock extends Block {
   const CommentBlock({this.defaultComment = '', Key? key}) : super(key: key);
