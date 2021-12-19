@@ -4,17 +4,25 @@ import '../block_view.dart';
 import '../input_provider.dart';
 
 class CommentBlock extends Block {
-  const CommentBlock({this.defaultComment = '', Key? key}) : super(key: key);
-
-  final String defaultComment;
+  String comment = '';
 
   @override
   String get name => 'Comment Block';
 
   @override
-  BlockState createState() => CommentBlockState();
-  @override
   BlockType get type => BlockType.t_passive;
+
+  @override
+  BlockView<Block> construct() =>
+      CommentBlockView(block: this, key: ObjectKey(this));
+}
+
+class CommentBlockView extends BlockView<CommentBlock> {
+  const CommentBlockView({required CommentBlock block, required Key key})
+      : super(block: block, key: key);
+
+  @override
+  BlockViewState<CommentBlockView> createState() => CommentBlockState();
 
   @override
   T accept<T>(BlockVisitor<T> visitor) {
@@ -22,10 +30,11 @@ class CommentBlock extends Block {
   }
 }
 
-class CommentBlockState extends BlockState {
+class CommentBlockState extends BlockViewState<CommentBlockView> {
   @override
   Widget render() {
     return TextProvider(
-        onSubmit: (String text) {}, hintText: 'Here goes your Comment');
+        onSubmit: (String text) => widget.block.comment = text,
+        hintText: 'Here goes your Comment');
   }
 }

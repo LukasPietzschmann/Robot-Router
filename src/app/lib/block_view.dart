@@ -55,14 +55,12 @@ Future<Block?> selectBlockFromList(BuildContext context) {
 }
 
 abstract class BlockVisitor<T> {
-  T visitTestBlock(TestBlock testBlock);
-  T visitCommentBlock(CommentBlock commentBlock);
-  T visitBlockWithSubblock(BlockWithSubblock blockWithSubblock);
+  T visitTestBlock(TestBlockView testBlock);
+  T visitCommentBlock(CommentBlockView commentBlock);
+  T visitBlockWithSubblock(BlockWithSubblockView blockWithSubblock);
 }
 
-abstract class Block extends StatefulWidget {
-  const Block({Key? key}) : super(key: key);
-
+abstract class Block {
   String get name;
   BlockType get type;
   String get typeName {
@@ -74,21 +72,22 @@ abstract class Block extends StatefulWidget {
     ][type.index];
   }
 
-  T accept<T>(BlockVisitor<T> visitor);
-
   static List<Block> allBlocks() {
-    return <Block>[
-      const TestBlock(),
-      const CommentBlock(),
-      const BlockWithSubblock(),
-    ];
+    return <Block>[BlockWithSubblock(), TestBlock(), CommentBlock()];
   }
 
-  @override
-  BlockState createState();
+  BlockView construct();
 }
 
-abstract class BlockState extends State<Block> {
+abstract class BlockView<B extends Block> extends StatefulWidget {
+  const BlockView({required this.block, required Key key}) : super(key: key);
+  final B block;
+
+  T accept<T>(BlockVisitor<T> visitor);
+}
+
+abstract class BlockViewState<B extends BlockView> extends State<B>
+    with AutomaticKeepAliveClientMixin {
   bool _isCurrentlyRunning = false;
 
   bool get isCurrentlyRunning {
@@ -104,7 +103,11 @@ abstract class BlockState extends State<Block> {
   Widget render();
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Card(
       margin: const EdgeInsets.all(10),
       shape: ContinuousRectangleBorder(

@@ -13,7 +13,7 @@ class WorkflowView extends StatefulWidget {
 }
 
 class _WorkflowViewState extends State<WorkflowView> {
-  List<Block> _blocks = <Block>[];
+  List<BlockView> _blocks = <BlockView>[];
   final ScrollController _scrollController = ScrollController();
   bool _needsScroll = false;
 
@@ -35,9 +35,9 @@ class _WorkflowViewState extends State<WorkflowView> {
               child: ListView.builder(
             itemCount: _blocks.length,
             itemBuilder: (BuildContext context, int index) {
-              final Block item = _blocks[index];
+              final BlockView item = _blocks[index];
               return Dismissible(
-                  key: ValueKey<Block>(item),
+                  key: ObjectKey(item),
                   direction: DismissDirection.endToStart,
                   background: Padding(
                     padding: const EdgeInsets.all(8),
@@ -46,7 +46,7 @@ class _WorkflowViewState extends State<WorkflowView> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
-                            Text('Delete ${item.name}',
+                            Text('Delete ${item.block.name}',
                                 style: const TextStyle(color: Colors.white)),
                             const Icon(Icons.delete_forever_rounded,
                                 color: Colors.white)
@@ -106,7 +106,7 @@ class _WorkflowViewState extends State<WorkflowView> {
                   onPressed: () {
                     selectBlockFromList(context).then((Block? block) => {
                           setState(() {
-                            _blocks = <Block>[..._blocks, block!];
+                            _blocks.add(block!.construct());
                             _needsScroll = true;
                           })
                         });

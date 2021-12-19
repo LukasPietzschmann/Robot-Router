@@ -2,16 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:robot_router/block_view.dart';
 
 class BlockWithSubblock extends Block {
-  const BlockWithSubblock({Key? key}) : super(key: key);
+  Block? subblock;
 
   @override
-  BlockState createState() => BlockWithSubblockState();
+  String get name => 'Block with Subblock';
 
   @override
-  String get name => 'Block with subblock';
+  BlockType get type => subblock?.type ?? BlockType.t_passive;
 
   @override
-  BlockType get type => BlockType.t_action;
+  BlockView<BlockWithSubblock> construct() =>
+      BlockWithSubblockView(block: this, key: ObjectKey(this));
+}
+
+class BlockWithSubblockView extends BlockView<BlockWithSubblock> {
+  const BlockWithSubblockView(
+      {required BlockWithSubblock block, required Key key})
+      : super(block: block, key: key);
+
+  @override
+  BlockViewState<BlockWithSubblockView> createState() =>
+      BlockWithSubblockState();
 
   @override
   T accept<T>(BlockVisitor<T> visitor) {
@@ -19,8 +30,15 @@ class BlockWithSubblock extends Block {
   }
 }
 
-class BlockWithSubblockState extends BlockState {
-  Block? _subblock;
+class BlockWithSubblockState extends BlockViewState<BlockWithSubblockView> {
+  BlockWithSubblockState();
+  Block? subblock;
+
+  @override
+  void initState() {
+    super.initState();
+    subblock = widget.block.subblock;
+  }
 
   @override
   Widget render() {
@@ -37,16 +55,17 @@ class BlockWithSubblockState extends BlockState {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(10),
-                    child: _subblock ??
+                    child: subblock?.construct() ??
                         const Text('Click the grey area to select a block',
                             style: TextStyle(color: Colors.white)),
                   )),
               onTap: () {
-                selectBlockFromList(context).then((Block? block) => {
-                      setState(() {
-                        _subblock = block ?? _subblock;
-                      })
-                    });
+                selectBlockFromList(context).then((Block? block) {
+                  setState(() {
+                    subblock = block ?? subblock;
+                  });
+                  widget.block.subblock = block ?? subblock;
+                });
               }),
         ),
       ],
