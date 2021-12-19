@@ -12,6 +12,11 @@ class TestBlock extends Block {
   @override
   BlockView<Block> construct() =>
       TestBlockView(block: this, key: ObjectKey(this));
+
+  @override
+  T accept<T>(BlockVisitor<T> visitor) {
+    return visitor.visitTestBlock(this);
+  }
 }
 
 class TestBlockView extends BlockView<TestBlock> {
@@ -20,11 +25,6 @@ class TestBlockView extends BlockView<TestBlock> {
 
   @override
   BlockViewState<TestBlockView> createState() => TestBlockState();
-
-  @override
-  T accept<T>(BlockVisitor<T> visitor) {
-    return visitor.visitTestBlock(this);
-  }
 }
 
 class TestBlockState extends BlockViewState<TestBlockView> {

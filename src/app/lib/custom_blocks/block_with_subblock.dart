@@ -13,6 +13,11 @@ class BlockWithSubblock extends Block {
   @override
   BlockView<BlockWithSubblock> construct() =>
       BlockWithSubblockView(block: this, key: ObjectKey(this));
+
+  @override
+  T accept<T>(BlockVisitor<T> visitor) {
+    return visitor.visitBlockWithSubblock(this);
+  }
 }
 
 class BlockWithSubblockView extends BlockView<BlockWithSubblock> {
@@ -23,11 +28,6 @@ class BlockWithSubblockView extends BlockView<BlockWithSubblock> {
   @override
   BlockViewState<BlockWithSubblockView> createState() =>
       BlockWithSubblockState();
-
-  @override
-  T accept<T>(BlockVisitor<T> visitor) {
-    return visitor.visitBlockWithSubblock(this);
-  }
 }
 
 class BlockWithSubblockState extends BlockViewState<BlockWithSubblockView> {

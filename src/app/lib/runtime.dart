@@ -14,20 +14,20 @@ class Runtime extends BlockVisitor<void> {
     Uri.parse('ws://79.249.140.33:9090'),
   );
 
-  void exec(List<BlockView> blocks) {
-    for (BlockView block in blocks) {
+  void exec(List<Block> blocks) {
+    for (Block block in blocks) {
       block.accept(this);
     }
   }
 
   @override
-  void visitBlockWithSubblock(BlockWithSubblockView blockWithSubblock) {
+  void visitBlockWithSubblock(BlockWithSubblock blockWithSubblock) {
     print('Exec block with subblock');
     //blockWithSubblock.subblock.accept(this);
   }
 
   @override
-  void visitCommentBlock(CommentBlockView commentBlock) async {
+  void visitCommentBlock(CommentBlock commentBlock) async {
     print('Exec comment Block');
     _channel.sink.add(jsonEncode({
       'op': 'subscribe',
@@ -42,7 +42,7 @@ class Runtime extends BlockVisitor<void> {
   }
 
   @override
-  void visitTestBlock(TestBlockView testBlock) {
+  void visitTestBlock(TestBlock testBlock) {
     print('Exec test block');
   }
 }

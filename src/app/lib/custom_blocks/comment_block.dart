@@ -15,6 +15,11 @@ class CommentBlock extends Block {
   @override
   BlockView<Block> construct() =>
       CommentBlockView(block: this, key: ObjectKey(this));
+
+  @override
+  T accept<T>(BlockVisitor<T> visitor) {
+    return visitor.visitCommentBlock(this);
+  }
 }
 
 class CommentBlockView extends BlockView<CommentBlock> {
@@ -23,11 +28,6 @@ class CommentBlockView extends BlockView<CommentBlock> {
 
   @override
   BlockViewState<CommentBlockView> createState() => CommentBlockState();
-
-  @override
-  T accept<T>(BlockVisitor<T> visitor) {
-    return visitor.visitCommentBlock(this);
-  }
 }
 
 class CommentBlockState extends BlockViewState<CommentBlockView> {

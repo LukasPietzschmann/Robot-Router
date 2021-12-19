@@ -113,7 +113,8 @@ class _WorkflowViewState extends State<WorkflowView> {
                   },
                   child: const Text('Add Block')),
               IconButton(
-                onPressed: () => Runtime.the().exec(_blocks),
+                onPressed: () => Runtime.the().exec(
+                    _blocks.map((BlockView block) => block.block).toList()),
                 icon: const Icon(Icons.send),
                 color: Colors.indigo,
               )

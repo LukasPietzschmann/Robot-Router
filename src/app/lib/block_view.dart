@@ -55,9 +55,9 @@ Future<Block?> selectBlockFromList(BuildContext context) {
 }
 
 abstract class BlockVisitor<T> {
-  T visitTestBlock(TestBlockView testBlock);
-  T visitCommentBlock(CommentBlockView commentBlock);
-  T visitBlockWithSubblock(BlockWithSubblockView blockWithSubblock);
+  T visitTestBlock(TestBlock testBlock);
+  T visitCommentBlock(CommentBlock commentBlock);
+  T visitBlockWithSubblock(BlockWithSubblock blockWithSubblock);
 }
 
 abstract class Block {
@@ -77,13 +77,12 @@ abstract class Block {
   }
 
   BlockView construct();
+  T accept<T>(BlockVisitor<T> visitor);
 }
 
 abstract class BlockView<B extends Block> extends StatefulWidget {
   const BlockView({required this.block, required Key key}) : super(key: key);
   final B block;
-
-  T accept<T>(BlockVisitor<T> visitor);
 }
 
 abstract class BlockViewState<B extends BlockView> extends State<B>
