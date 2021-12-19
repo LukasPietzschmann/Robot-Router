@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:robot_router/custom_blocks/block_with_subblock.dart';
 import 'package:robot_router/custom_blocks/comment_block.dart';
 import 'package:robot_router/custom_blocks/test_block.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 enum BlockType { t_action, t_passive, t_event, t_control }
 
 Future<Block?> selectBlockFromList(BuildContext context) {
   return showModalBottomSheet<Block>(
+    backgroundColor: Colors.white,
     context: context,
     isDismissible: true,
     enableDrag: false,
@@ -14,22 +16,38 @@ Future<Block?> selectBlockFromList(BuildContext context) {
       borderRadius: BorderRadius.circular(20),
     ),
     builder: (BuildContext context) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-                child: ListView(
-                    padding: const EdgeInsets.all(10),
-                    children: Block.allBlocks().map((List<Block> blocks) {
-                      return Wrap(direction: Axis.vertical, children: <Widget>[
-                        Text(blocks[0].typeName),
-                        ...blocks.map((Block block) => TextButton(
-                            onPressed: () => Navigator.pop(context, block),
-                            child: Text('    ' + block.name)))
-                      ]);
-                    }).toList()))
-          ],
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: StickyGroupedListView<Block, BlockType>(
+          floatingHeader: false,
+          stickyHeaderBackgroundColor: Colors.white,
+          elements: Block.allBlocks(),
+          groupBy: (Block block) => block.type,
+          groupComparator: (BlockType type1, BlockType type2) =>
+              type2.index.compareTo(type1.index),
+          itemComparator: (Block block1, Block block2) =>
+              block2.name.compareTo(block1.name),
+          groupSeparatorBuilder: (Block block) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text(block.typeName,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 20)),
+            );
+          },
+          itemBuilder: (BuildContext context, Block block) {
+            return TextButton(
+                onPressed: () {
+                  Navigator.pop(context, block);
+                },
+                child: Text(block.name),
+                style: ButtonStyle(
+                    alignment: Alignment.center,
+                    padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
+                    foregroundColor: MaterialStateProperty.all(Colors.black),
+                    visualDensity: const VisualDensity(vertical: -3)));
+          },
         ),
       );
     },
@@ -58,19 +76,12 @@ abstract class Block extends StatefulWidget {
 
   T accept<T>(BlockVisitor<T> visitor);
 
-  static List<List<Block>> allBlocks() {
-    final List<Block> blocks = <Block>[
+  static List<Block> allBlocks() {
+    return <Block>[
       const TestBlock(),
       const CommentBlock(),
       const BlockWithSubblock(),
     ];
-    List<List<Block>> result = List<List<Block>>.generate(
-        BlockType.values.length, (int index) => <Block>[]);
-    for (Block block in blocks) {
-      result[block.type.index].add(block);
-    }
-    result.removeWhere((List<Block> blocks) => blocks.isEmpty);
-    return result;
   }
 
   @override
