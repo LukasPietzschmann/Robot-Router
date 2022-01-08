@@ -1,27 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:robot_router/custom_blocks/block_with_subblock.dart';
 import 'package:robot_router/custom_blocks/comment_block.dart';
+import 'package:robot_router/custom_blocks/comparison_block.dart';
+import 'package:robot_router/custom_blocks/literal_block.dart';
 import 'package:robot_router/custom_blocks/test_block.dart';
+import 'package:robot_router/custom_blocks/while_block.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
-enum BlockType { t_action, t_passive, t_event, t_control }
+import 'custom_blocks/if_block.dart';
 
-Future<Block?> selectBlockFromList(BuildContext context) {
+enum BlockType { t_action, t_passive, t_event, t_control, t_expr }
+
+Future<Block?> selectBlockFromList(BuildContext context,
+    {List<BlockType> desiredTypes = const <BlockType>[
+      BlockType.t_action,
+      BlockType.t_passive,
+      BlockType.t_event,
+      BlockType.t_control,
+      BlockType.t_expr
+    ]}) {
   return showModalBottomSheet<Block>(
     backgroundColor: Colors.white,
     context: context,
     isDismissible: true,
     enableDrag: false,
-    shape: ContinuousRectangleBorder(
-      borderRadius: BorderRadius.circular(20),
-    ),
+    shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(15)),
     builder: (BuildContext context) {
       return Padding(
         padding: const EdgeInsets.all(20),
         child: StickyGroupedListView<Block, BlockType>(
           floatingHeader: false,
           stickyHeaderBackgroundColor: Colors.white,
-          elements: Block.allBlocks(),
+          elements: Block.allBlocks()
+              .where((Block block) => desiredTypes.contains(block.type))
+              .toList(),
           groupBy: (Block block) => block.type,
           groupComparator: (BlockType type1, BlockType type2) =>
               type2.index.compareTo(type1.index),
@@ -57,7 +68,10 @@ Future<Block?> selectBlockFromList(BuildContext context) {
 abstract class BlockVisitor<T> {
   T visitTestBlock(TestBlock testBlock);
   T visitCommentBlock(CommentBlock commentBlock);
-  T visitBlockWithSubblock(BlockWithSubblock blockWithSubblock);
+  T visitWhileBlock(WhileBlock whileBlock);
+  T visitIfBlock(IfBlock whileBlock);
+  T visitComparisonBlock(ComparisonBlock comparisonBlock);
+  T visitLiteralBlock(LiteralBlock literalBlock);
 }
 
 abstract class Block {
@@ -68,12 +82,20 @@ abstract class Block {
       'Action Block',
       'Passive Block',
       'Event Block',
-      'Control Block'
+      'Control Block',
+      'Expression Block'
     ][type.index];
   }
 
   static List<Block> allBlocks() {
-    return <Block>[BlockWithSubblock(), TestBlock(), CommentBlock()];
+    return <Block>[
+      TestBlock(),
+      CommentBlock(),
+      WhileBlock(),
+      IfBlock(),
+      ComparisonBlock(),
+      LiteralBlock()
+    ];
   }
 
   BlockView construct();
@@ -112,7 +134,7 @@ abstract class BlockViewState<B extends BlockView> extends State<B>
       shape: ContinuousRectangleBorder(
         side: BorderSide(
             color: _isCurrentlyRunning ? Colors.green : Colors.black, width: 1),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(15),
       ),
       child: Padding(padding: const EdgeInsets.all(15), child: render()),
     );

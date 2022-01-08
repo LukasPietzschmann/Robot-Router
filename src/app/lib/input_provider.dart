@@ -16,13 +16,16 @@ class TextProvider extends InputProvider<String> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-        maxLines: 1,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: hintText ?? 'Here goes your Text',
-        ),
-        onSubmitted: (String text) => onSubmit(text));
+    return Flexible(
+      fit: FlexFit.tight,
+      child: TextField(
+          maxLines: 1,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: hintText ?? 'Here goes your Text',
+          ),
+          onSubmitted: (String text) => onSubmit(text)),
+    );
   }
 }
 
@@ -32,16 +35,19 @@ class NumberProvider extends InputProvider<int> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-        keyboardType: TextInputType.number,
-        inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.digitsOnly
-        ],
-        maxLines: 1,
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-        ),
-        onSubmitted: (String text) => onSubmit(int.parse(text)));
+    return Flexible(
+      fit: FlexFit.tight,
+      child: TextField(
+          keyboardType: TextInputType.number,
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly
+          ],
+          maxLines: 1,
+          decoration: const InputDecoration(
+            border: InputBorder.none,
+          ),
+          onSubmitted: (String text) => onSubmit(int.parse(text))),
+    );
   }
 }
 
