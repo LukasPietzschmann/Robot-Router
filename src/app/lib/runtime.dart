@@ -10,24 +10,29 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 class _BlockReturnValue {
   factory _BlockReturnValue.boolean(bool value) =>
-      _BlockReturnValue(true, false, false, value, null, null);
+      _BlockReturnValue(hasConditionalValue: true, boolVal: value);
 
   factory _BlockReturnValue.number(double value) =>
-      _BlockReturnValue(false, true, false, null, value, null);
+      _BlockReturnValue(hasNumberValue: true, numVal: value);
 
   factory _BlockReturnValue.string(String value) =>
-      _BlockReturnValue(false, false, true, null, null, value);
+      _BlockReturnValue(hasStringValue: true, stringVal: value);
 
-  _BlockReturnValue(this.hasConditionalValue, this.hasNumberValue,
-      this.hasStringValue, this.boolVal, this.numVal, this.stringVal);
+  _BlockReturnValue(
+      {this.hasConditionalValue = false,
+      this.hasNumberValue = false,
+      this.hasStringValue = false,
+      this.boolVal = false,
+      this.numVal = -1,
+      this.stringVal = ''});
 
   final bool hasConditionalValue;
   final bool hasNumberValue;
   final bool hasStringValue;
 
-  final bool? boolVal;
-  final double? numVal;
-  final String? stringVal;
+  final bool boolVal;
+  final double numVal;
+  final String stringVal;
 }
 
 class Runtime extends BlockVisitor<_BlockReturnValue> {
@@ -68,21 +73,51 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
 
   @override
   _BlockReturnValue visitWhileBlock(WhileBlock whileBlock) {
+    _BlockReturnValue condition = whileBlock.condBlock!.accept(this);
+    assert(condition.hasConditionalValue);
+    if (condition.boolVal) {
+      whileBlock.thenBlock!.accept(this);
+    }
     return _BlockReturnValue.boolean(false);
   }
 
   @override
-  _BlockReturnValue visitIfBlock(IfBlock whileBlock) {
+  _BlockReturnValue visitIfBlock(IfBlock ifBlock) {
+    _BlockReturnValue condition = ifBlock.condBlock!.accept(this);
+    assert(condition.hasConditionalValue);
+    if (condition.boolVal) {
+      ifBlock.thenBlock!.accept(this);
+    } else {
+      ifBlock.elseBlock!.accept(this);
+    }
     return _BlockReturnValue.boolean(false);
   }
 
   @override
   _BlockReturnValue visitComparisonBlock(ComparisonBlock comparisonBlock) {
-    return _BlockReturnValue.boolean(false);
+    _BlockReturnValue lhs = comparisonBlock.lhs!.accept(this);
+    _BlockReturnValue rhs = comparisonBlock.rhs!.accept(this);
+
+    switch (comparisonBlock.selectedOper) {
+      case '<':
+        return _BlockReturnValue.boolean(lhs.numVal < rhs.numVal);
+      case '<=':
+        return _BlockReturnValue.boolean(lhs.numVal <= rhs.numVal);
+      case '>':
+        return _BlockReturnValue.boolean(lhs.numVal > rhs.numVal);
+      case '>=':
+        return _BlockReturnValue.boolean(lhs.numVal >= rhs.numVal);
+      case '==':
+        return _BlockReturnValue.boolean(lhs.numVal == rhs.numVal);
+      case '!=':
+        return _BlockReturnValue.boolean(lhs.numVal != rhs.numVal);
+      default:
+        return _BlockReturnValue.boolean(false);
+    }
   }
 
   @override
   _BlockReturnValue visitLiteralBlock(LiteralBlock literalBlock) {
-    return _BlockReturnValue.boolean(false);
+    return _BlockReturnValue.number(literalBlock.literal!);
   }
 }

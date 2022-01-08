@@ -69,7 +69,7 @@ abstract class BlockVisitor<T> {
   T visitTestBlock(TestBlock testBlock);
   T visitCommentBlock(CommentBlock commentBlock);
   T visitWhileBlock(WhileBlock whileBlock);
-  T visitIfBlock(IfBlock whileBlock);
+  T visitIfBlock(IfBlock ifBlock);
   T visitComparisonBlock(ComparisonBlock comparisonBlock);
   T visitLiteralBlock(LiteralBlock literalBlock);
 }
