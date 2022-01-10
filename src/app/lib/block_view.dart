@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:robot_router/custom_blocks/comment_block.dart';
 import 'package:robot_router/custom_blocks/comparison_block.dart';
+import 'package:robot_router/custom_blocks/drive_in_direction_block.dart';
 import 'package:robot_router/custom_blocks/literal_block.dart';
 import 'package:robot_router/custom_blocks/test_block.dart';
 import 'package:robot_router/custom_blocks/while_block.dart';
@@ -72,6 +73,7 @@ abstract class BlockVisitor<T> {
   T visitIfBlock(IfBlock ifBlock);
   T visitComparisonBlock(ComparisonBlock comparisonBlock);
   T visitLiteralBlock(LiteralBlock literalBlock);
+  T visitDriveInDirectionBlock(DriveInDirectionBlock driveInDirectionBlock);
 }
 
 abstract class Block {
@@ -94,7 +96,8 @@ abstract class Block {
       WhileBlock(),
       IfBlock(),
       ComparisonBlock(),
-      LiteralBlock()
+      LiteralBlock(),
+      DriveInDirectionBlock()
     ];
   }
 

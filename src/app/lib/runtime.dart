@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:robot_router/block_view.dart';
 import 'package:robot_router/custom_blocks/comment_block.dart';
 import 'package:robot_router/custom_blocks/comparison_block.dart';
+import 'package:robot_router/custom_blocks/drive_in_direction_block.dart';
 import 'package:robot_router/custom_blocks/if_block.dart';
 import 'package:robot_router/custom_blocks/literal_block.dart';
 import 'package:robot_router/custom_blocks/test_block.dart';
@@ -119,5 +120,11 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
   @override
   _BlockReturnValue visitLiteralBlock(LiteralBlock literalBlock) {
     return _BlockReturnValue.number(literalBlock.literal!);
+  }
+
+  @override
+  _BlockReturnValue visitDriveInDirectionBlock(
+      DriveInDirectionBlock driveInDirectionBlock) {
+    return _BlockReturnValue.boolean(false);
   }
 }
