@@ -1,0 +1,2 @@
+bool leftLaneDetected
+bool rightLaneDetected

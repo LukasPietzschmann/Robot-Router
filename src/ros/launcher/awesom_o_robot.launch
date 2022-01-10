@@ -1,0 +1,14 @@
+<launch>
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+  <node name="sonar" pkg="awesom_o_robot" type="sonar.py" />
+  <node name="tilt_servo" pkg="awesom_o_robot" type="tilt_servo.py" />
+  <node name="pan_servo" pkg="awesom_o_robot" type="pan_servo.py" />
+  <node name="motor" pkg="awesom_o_robot" type="motor.py" />
+  <node name="motor_drive_forward_server" pkg="awesom_o_robot" type="motor_drive_forward_server.py" />
+  <node name="motor_drive_backward_server" pkg="awesom_o_robot" type="motor_drive_backward_server.py" />
+  <node name="motor_rotate_right_server" pkg="awesom_o_robot" type="motor_rotate_right_server.py" />
+  <node name="motor_rotate_left_server" pkg="awesom_o_robot" type="motor_rotate_left_server.py" />
+  <node name="motor_turn_forward_server" pkg="awesom_o_robot" type="motor_turn_forward_server.py" />
+  <node name="motor_turn_backward_server" pkg="awesom_o_robot" type="motor_turn_backward_server.py" />
+  <node name="line_sensor" pkg="awesom_o_robot" type="line_sensor.py" />
+</launch>
