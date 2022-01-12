@@ -40,6 +40,7 @@ class DriveInDirectionBlockState
 
   @override
   void initState() {
+    super.initState();
     direction = widget.block.direction;
     steps = widget.block.steps;
   }
