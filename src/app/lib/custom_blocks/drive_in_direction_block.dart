@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../block_view.dart';
 import '../input_provider.dart';
 
+enum Direction { forward, backward }
+
 class DriveInDirectionBlock extends Block {
-  String? direction;
+  Direction? direction;
   int? steps;
 
   @override
@@ -35,7 +37,7 @@ class DriveInDirectionBlockView extends BlockView<DriveInDirectionBlock> {
 
 class DriveInDirectionBlockState
     extends BlockViewState<DriveInDirectionBlockView> {
-  String? direction;
+  Direction? direction;
   int? steps;
 
   @override
@@ -58,14 +60,21 @@ class DriveInDirectionBlockState
         }),
         const Text(' steps '),
         CappedValueProvider(
-            possibleValues: const <String>['forward', 'backwards'],
+            possibleValues: <String>[
+              Direction.forward.name,
+              Direction.backward.name
+            ],
             onSubmit: (String selected) {
               setState(() {
-                direction = selected;
+                if (selected == Direction.forward.name) {
+                  direction = Direction.forward;
+                } else {
+                  direction = Direction.backward;
+                }
               });
               widget.block.direction = direction;
             }),
-        Text(direction ?? '')
+        Text(direction?.name ?? '')
       ],
     );
   }

@@ -1,13 +1,13 @@
-import 'dart:convert';
 import 'package:robot_router/block_view.dart';
 import 'package:robot_router/custom_blocks/comment_block.dart';
 import 'package:robot_router/custom_blocks/comparison_block.dart';
 import 'package:robot_router/custom_blocks/drive_in_direction_block.dart';
 import 'package:robot_router/custom_blocks/if_block.dart';
 import 'package:robot_router/custom_blocks/literal_block.dart';
+import 'package:robot_router/custom_blocks/move_head_block.dart';
 import 'package:robot_router/custom_blocks/test_block.dart';
 import 'package:robot_router/custom_blocks/while_block.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:robot_router/ws_wrapper/rosbridge.dart';
 
 class _BlockReturnValue {
   factory _BlockReturnValue.boolean(bool value) =>
@@ -41,29 +41,19 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
   Runtime._internal();
 
   static final Runtime _instance = Runtime._internal();
-  final WebSocketChannel _channel = WebSocketChannel.connect(
-    Uri.parse('ws://79.249.140.33:9090'),
-  );
+
+  final Rosbridge rb = Rosbridge();
 
   void exec(List<Block> blocks) {
+    rb.connect('87.183.50.244', 9090);
     for (Block block in blocks) {
       block.accept(this);
     }
+    //rb.closeConnection();
   }
 
   @override
   _BlockReturnValue visitCommentBlock(CommentBlock commentBlock) {
-    print('Exec comment Block');
-    _channel.sink.add(jsonEncode({
-      'op': 'subscribe',
-      'topic': 'sonar_range',
-      'type': 'sensor_msgs/Range'
-    }));
-
-    _channel.stream.listen(
-      (dynamic data) => print(data),
-      onError: (dynamic error) => print(error),
-    );
     return _BlockReturnValue.boolean(false);
   }
 
@@ -125,6 +115,27 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
   @override
   _BlockReturnValue visitDriveInDirectionBlock(
       DriveInDirectionBlock driveInDirectionBlock) {
+    late Topic t;
+    if (driveInDirectionBlock.direction == Direction.forward) {
+      t = Topic(rb, '/motor_drive_forward', 'awesom_o_robot/MotorServiceValues',
+          true);
+    } else {
+      t = Topic(rb, '/motor_drive_backward',
+          'awesom_o_robot/MotorServiceValues', true);
+    }
+    t.publish({'speed': 100, 'duration': driveInDirectionBlock.steps! / 2});
+    return _BlockReturnValue.boolean(false);
+  }
+
+  @override
+  _BlockReturnValue visitMoveHeadBlock(MoveHeadBlock moveHeadBlock) {
+    late Topic t;
+    if (moveHeadBlock.motion == Motion.Pan) {
+      t = Topic(rb, '/pan_servo_angle', '/std_msgs/Int16');
+    } else {
+      t = Topic(rb, '/tilt_servo_angle', '/std_msgs/Int16');
+    }
+    t.publish({'data': moveHeadBlock.degrees});
     return _BlockReturnValue.boolean(false);
   }
 }
