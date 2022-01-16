@@ -100,7 +100,8 @@ abstract class Block {
       ComparisonBlock(),
       LiteralBlock(),
       DriveInDirectionBlock(),
-      MoveHeadBlock()
+      MoveHeadBlock(),
+      GetDistanceBlock()
     ];
   }
 
