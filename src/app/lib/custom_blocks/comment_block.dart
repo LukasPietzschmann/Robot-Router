@@ -17,7 +17,7 @@ class CommentBlock extends Block {
       CommentBlockView(block: this, key: ObjectKey(this));
 
   @override
-  T accept<T>(BlockVisitor<T> visitor) {
+  Future<T> accept<T>(BlockVisitor<T> visitor) {
     return visitor.visitCommentBlock(this);
   }
 }

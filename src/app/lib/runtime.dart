@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:robot_router/block_view.dart';
 import 'package:robot_router/custom_blocks/comment_block.dart';
 import 'package:robot_router/custom_blocks/comparison_block.dart';
 import 'package:robot_router/custom_blocks/drive_in_direction_block.dart';
+import 'package:robot_router/custom_blocks/get_distance_block.dart';
 import 'package:robot_router/custom_blocks/if_block.dart';
 import 'package:robot_router/custom_blocks/literal_block.dart';
 import 'package:robot_router/custom_blocks/move_head_block.dart';
@@ -53,28 +56,29 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
   }
 
   @override
-  _BlockReturnValue visitCommentBlock(CommentBlock commentBlock) {
+  Future<_BlockReturnValue> visitCommentBlock(CommentBlock commentBlock) async {
     return _BlockReturnValue.boolean(false);
   }
 
   @override
-  _BlockReturnValue visitTestBlock(TestBlock testBlock) {
+  Future<_BlockReturnValue> visitTestBlock(TestBlock testBlock) async {
     return _BlockReturnValue.boolean(false);
   }
 
   @override
-  _BlockReturnValue visitWhileBlock(WhileBlock whileBlock) {
-    _BlockReturnValue condition = whileBlock.condBlock!.accept(this);
+  Future<_BlockReturnValue> visitWhileBlock(WhileBlock whileBlock) async {
+    _BlockReturnValue condition = await whileBlock.condBlock!.accept(this);
     assert(condition.hasConditionalValue);
-    if (condition.boolVal) {
-      whileBlock.thenBlock!.accept(this);
+    print(condition.boolVal ? 'true' : 'false');
+    while (condition.boolVal) {
+      await whileBlock.thenBlock!.accept(this);
     }
     return _BlockReturnValue.boolean(false);
   }
 
   @override
-  _BlockReturnValue visitIfBlock(IfBlock ifBlock) {
-    _BlockReturnValue condition = ifBlock.condBlock!.accept(this);
+  Future<_BlockReturnValue> visitIfBlock(IfBlock ifBlock) async {
+    _BlockReturnValue condition = await ifBlock.condBlock!.accept(this);
     assert(condition.hasConditionalValue);
     if (condition.boolVal) {
       ifBlock.thenBlock!.accept(this);
@@ -85,9 +89,11 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
   }
 
   @override
-  _BlockReturnValue visitComparisonBlock(ComparisonBlock comparisonBlock) {
-    _BlockReturnValue lhs = comparisonBlock.lhs!.accept(this);
-    _BlockReturnValue rhs = comparisonBlock.rhs!.accept(this);
+  Future<_BlockReturnValue> visitComparisonBlock(
+      ComparisonBlock comparisonBlock) async {
+    _BlockReturnValue lhs = await comparisonBlock.lhs!.accept(this);
+    _BlockReturnValue rhs = await comparisonBlock.rhs!.accept(this);
+    print('lhs: ' + lhs.numVal.toString() + ' rhs: ' + rhs.numVal.toString());
 
     switch (comparisonBlock.selectedOper) {
       case '<':
@@ -108,13 +114,14 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
   }
 
   @override
-  _BlockReturnValue visitLiteralBlock(LiteralBlock literalBlock) {
-    return _BlockReturnValue.number(literalBlock.literal!);
+  Future<_BlockReturnValue> visitLiteralBlock(LiteralBlock literalBlock) async {
+    return _BlockReturnValue.number(literalBlock.literal ?? 0);
   }
 
   @override
-  _BlockReturnValue visitDriveInDirectionBlock(
-      DriveInDirectionBlock driveInDirectionBlock) {
+  Future<_BlockReturnValue> visitDriveInDirectionBlock(
+      DriveInDirectionBlock driveInDirectionBlock) async {
+    print("hiii");
     late Topic t;
     if (driveInDirectionBlock.direction == Direction.forward) {
       t = Topic(rb, '/motor_drive_forward', 'awesom_o_robot/MotorServiceValues',
@@ -123,19 +130,35 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
       t = Topic(rb, '/motor_drive_backward',
           'awesom_o_robot/MotorServiceValues', true);
     }
-    t.publish({'speed': 100, 'duration': driveInDirectionBlock.steps! / 2});
+    t.publish({
+      'speed': 100,
+      'duration': (driveInDirectionBlock.steps!).round() * 1000
+    });
+    await Future.delayed(
+        Duration(seconds: (driveInDirectionBlock.steps!).round()));
     return _BlockReturnValue.boolean(false);
   }
 
   @override
-  _BlockReturnValue visitMoveHeadBlock(MoveHeadBlock moveHeadBlock) {
+  Future<_BlockReturnValue> visitMoveHeadBlock(
+      MoveHeadBlock moveHeadBlock) async {
     late Topic t;
     if (moveHeadBlock.motion == Motion.Pan) {
       t = Topic(rb, '/pan_servo_angle', '/std_msgs/Int16');
     } else {
       t = Topic(rb, '/tilt_servo_angle', '/std_msgs/Int16');
     }
+    print(moveHeadBlock.degrees);
     t.publish({'data': moveHeadBlock.degrees});
+    await Future.delayed(const Duration(milliseconds: 500));
     return _BlockReturnValue.boolean(false);
+  }
+
+  @override
+  Future<_BlockReturnValue> visitGetDistanceBlock(
+      GetDistanceBlock getDistanceBlock) async {
+    String res = await Topic(rb, '/sonar_range', 'sensor_msgs/Range')
+        .subscribeAndGetFirst();
+    return _BlockReturnValue.number(jsonDecode(res)['msg']['range'] as double);
   }
 }

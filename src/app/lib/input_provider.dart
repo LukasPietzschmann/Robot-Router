@@ -24,7 +24,7 @@ class TextProvider extends InputProvider<String> {
             border: InputBorder.none,
             hintText: hintText ?? 'Here goes your Text',
           ),
-          onSubmitted: (String text) => onSubmit(text)),
+          onChanged: (String text) => onSubmit(text)),
     );
   }
 }
@@ -46,7 +46,9 @@ class NumberProvider extends InputProvider<int> {
           decoration: const InputDecoration(
             border: InputBorder.none,
           ),
-          onSubmitted: (String text) => onSubmit(int.parse(text))),
+          onChanged: (String text) {
+            onSubmit(text.isEmpty ? 0 : int.parse(text));
+          }),
     );
   }
 }

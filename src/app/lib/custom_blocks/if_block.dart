@@ -8,7 +8,7 @@ class IfBlock extends Block {
   Block? elseBlock;
 
   @override
-  T accept<T>(BlockVisitor<T> visitor) => visitor.visitIfBlock(this);
+  Future<T> accept<T>(BlockVisitor<T> visitor) => visitor.visitIfBlock(this);
 
   @override
   BlockView<IfBlock> construct() =>

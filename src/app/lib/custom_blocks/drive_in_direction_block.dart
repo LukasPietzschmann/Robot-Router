@@ -20,7 +20,7 @@ class DriveInDirectionBlock extends Block {
       DriveInDirectionBlockView(block: this, key: ObjectKey(this));
 
   @override
-  T accept<T>(BlockVisitor<T> visitor) {
+  Future<T> accept<T>(BlockVisitor<T> visitor) {
     return visitor.visitDriveInDirectionBlock(this);
   }
 }

@@ -14,7 +14,7 @@ class TestBlock extends Block {
       TestBlockView(block: this, key: ObjectKey(this));
 
   @override
-  T accept<T>(BlockVisitor<T> visitor) {
+  Future<T> accept<T>(BlockVisitor<T> visitor) {
     return visitor.visitTestBlock(this);
   }
 }

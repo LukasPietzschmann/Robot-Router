@@ -79,8 +79,7 @@ class HomePage extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            const SettingsView()));
+                        builder: (BuildContext context) => SettingsView()));
               },
               icon: const Icon(Icons.settings))
         ]),

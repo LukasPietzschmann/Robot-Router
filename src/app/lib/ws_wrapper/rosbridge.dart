@@ -16,6 +16,10 @@ class Topic {
         _name, _messageType, (dynamic data) => callback(data));
   }
 
+  Future<dynamic> subscribeAndGetFirst() async {
+    return _rosbridge._subscribeAndGetFirst(_name, _messageType);
+  }
+
   void publish(Object message) {
     _rosbridge._publish(_name, _messageType, message, _isService);
   }
@@ -28,7 +32,7 @@ class Rosbridge {
 
   void connect(String ip, int port,
       [Function(WebSocketChannelException e)? onError]) {
-    if (_connected) return;
+    //if (_connected) return;
     try {
       _channel = WebSocketChannel.connect(
           Uri.parse('ws://' + ip + ':' + port.toString()));
@@ -49,6 +53,13 @@ class Rosbridge {
     _channel.stream
         .listen((dynamic data) => callback(data), cancelOnError: true);
     return true;
+  }
+
+  Future _subscribeAndGetFirst(String topic, String type) {
+    if (!_connected) return Future.error('Not connected');
+    _channel.sink
+        .add(jsonEncode({'op': 'subscribe', 'topic': topic, 'type': type}));
+    return _channel.stream.first;
   }
 
   bool _publish(String topic, String type, Object message,

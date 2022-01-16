@@ -20,7 +20,7 @@ class MoveHeadBlock extends Block {
       MoveHeadBlockView(block: this, key: ObjectKey(this));
 
   @override
-  T accept<T>(BlockVisitor<T> visitor) {
+  Future<T> accept<T>(BlockVisitor<T> visitor) {
     return visitor.visitMoveHeadBlock(this);
   }
 }

@@ -9,7 +9,8 @@ class ComparisonBlock extends Block {
   Block? rhs;
 
   @override
-  T accept<T>(BlockVisitor<T> visitor) => visitor.visitComparisonBlock(this);
+  Future<T> accept<T>(BlockVisitor<T> visitor) =>
+      visitor.visitComparisonBlock(this);
 
   @override
   BlockView<ComparisonBlock> construct() =>
@@ -67,6 +68,7 @@ class ComparisonBlockState extends BlockViewState<ComparisonBlockView> {
                 setState(() {
                   selectedOper = submitted;
                 });
+                widget.block.selectedOper = submitted;
               }),
         ),
         Text(selectedOper ?? ''),

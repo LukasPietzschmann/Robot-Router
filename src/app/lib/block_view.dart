@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:robot_router/custom_blocks/comment_block.dart';
 import 'package:robot_router/custom_blocks/comparison_block.dart';
 import 'package:robot_router/custom_blocks/drive_in_direction_block.dart';
+import 'package:robot_router/custom_blocks/get_distance_block.dart';
 import 'package:robot_router/custom_blocks/literal_block.dart';
 import 'package:robot_router/custom_blocks/move_head_block.dart';
 import 'package:robot_router/custom_blocks/test_block.dart';
@@ -68,14 +69,16 @@ Future<Block?> selectBlockFromList(BuildContext context,
 }
 
 abstract class BlockVisitor<T> {
-  T visitTestBlock(TestBlock testBlock);
-  T visitCommentBlock(CommentBlock commentBlock);
-  T visitWhileBlock(WhileBlock whileBlock);
-  T visitIfBlock(IfBlock ifBlock);
-  T visitComparisonBlock(ComparisonBlock comparisonBlock);
-  T visitLiteralBlock(LiteralBlock literalBlock);
-  T visitDriveInDirectionBlock(DriveInDirectionBlock driveInDirectionBlock);
-  T visitMoveHeadBlock(MoveHeadBlock moveHeadBlock);
+  Future<T> visitTestBlock(TestBlock testBlock);
+  Future<T> visitCommentBlock(CommentBlock commentBlock);
+  Future<T> visitWhileBlock(WhileBlock whileBlock);
+  Future<T> visitIfBlock(IfBlock ifBlock);
+  Future<T> visitComparisonBlock(ComparisonBlock comparisonBlock);
+  Future<T> visitLiteralBlock(LiteralBlock literalBlock);
+  Future<T> visitDriveInDirectionBlock(
+      DriveInDirectionBlock driveInDirectionBlock);
+  Future<T> visitMoveHeadBlock(MoveHeadBlock moveHeadBlock);
+  Future<T> visitGetDistanceBlock(GetDistanceBlock getDistanceBlock);
 }
 
 abstract class Block {
@@ -106,7 +109,7 @@ abstract class Block {
   }
 
   BlockView construct();
-  T accept<T>(BlockVisitor<T> visitor);
+  Future<T> accept<T>(BlockVisitor<T> visitor);
 }
 
 abstract class BlockView<B extends Block> extends StatefulWidget {

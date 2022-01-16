@@ -7,7 +7,8 @@ class LiteralBlock extends Block {
   double? literal;
 
   @override
-  T accept<T>(BlockVisitor<T> visitor) => visitor.visitLiteralBlock(this);
+  Future<T> accept<T>(BlockVisitor<T> visitor) =>
+      visitor.visitLiteralBlock(this);
 
   @override
   BlockView<LiteralBlock> construct() =>
@@ -44,6 +45,7 @@ class LiteralBlockState extends BlockViewState<LiteralBlockView> {
         literal = num.toDouble();
       });
       widget.block.literal = num.toDouble();
+      print(widget.block.literal);
     });
   }
 }

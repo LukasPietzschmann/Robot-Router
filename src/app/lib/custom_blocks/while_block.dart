@@ -7,7 +7,7 @@ class WhileBlock extends Block {
   Block? condBlock;
 
   @override
-  T accept<T>(BlockVisitor<T> visitor) => visitor.visitWhileBlock(this);
+  Future<T> accept<T>(BlockVisitor<T> visitor) => visitor.visitWhileBlock(this);
 
   @override
   BlockView<WhileBlock> construct() =>
