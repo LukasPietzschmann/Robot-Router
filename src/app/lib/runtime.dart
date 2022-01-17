@@ -47,12 +47,12 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
 
   final Rosbridge rb = Rosbridge();
 
-  void exec(List<Block> blocks) {
+  void exec(List<Block> blocks) async {
     rb.connect('87.183.50.244', 9090);
     for (Block block in blocks) {
-      block.accept(this);
+      await block.accept(this);
     }
-    //rb.closeConnection();
+    rb.closeConnection();
   }
 
   @override
@@ -72,6 +72,7 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
     print(condition.boolVal ? 'true' : 'false');
     while (condition.boolVal) {
       await whileBlock.thenBlock!.accept(this);
+      condition = await whileBlock.condBlock!.accept(this);
     }
     return _BlockReturnValue.boolean(false);
   }
@@ -81,9 +82,9 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
     _BlockReturnValue condition = await ifBlock.condBlock!.accept(this);
     assert(condition.hasConditionalValue);
     if (condition.boolVal) {
-      ifBlock.thenBlock!.accept(this);
+      await ifBlock.thenBlock!.accept(this);
     } else {
-      ifBlock.elseBlock!.accept(this);
+      await ifBlock.elseBlock!.accept(this);
     }
     return _BlockReturnValue.boolean(false);
   }
@@ -157,7 +158,9 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
   @override
   Future<_BlockReturnValue> visitGetDistanceBlock(
       GetDistanceBlock getDistanceBlock) async {
-    String res = await Topic(rb, '/sonar_range', 'sensor_msgs/Range')
+    Rosbridge rbs2 = Rosbridge();
+    rbs2.connect('87.183.50.244', 9090);
+    String res = await Topic(rbs2, '/sonar_range', 'sensor_msgs/Range')
         .subscribeAndGetFirst();
     return _BlockReturnValue.number(jsonDecode(res)['msg']['range'] as double);
   }
