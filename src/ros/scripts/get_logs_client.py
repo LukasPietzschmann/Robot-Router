@@ -2,13 +2,13 @@
 
 import sys
 from awesom_o_robot.srv import MotorServiceValues, MotorServiceValuesResponse
-import rospy 
+import rospy
 
-def motor_drive_forward_client(speed, duration):
-    rospy.wait_for_service('motor_drive_forward')
+def motor_drive_backward_client(speed, duration):
+    rospy.wait_for_service('motor_drive_backward')
     try:
-        motor_drive_forward = rospy.ServiceProxy('motor_drive_forward', MotorServiceValues)
-        resp1 = motor_drive_forward(speed, duration)
+        motor_drive_backward = rospy.ServiceProxy('motor_drive_backward', MotorServiceValues)
+        resp1 = motor_drive_backward(speed, duration)
         return resp1.result
     except rospy.ServiceException as e:
         print("Service call failed: %s"%e)
@@ -23,4 +23,4 @@ if __name__ == "__main__":
     else:
         print(usage())
         sys.exit(1)
-    motor_drive_forward_client(speed, duration)
+    motor_drive_backward_client(speed, duration)

@@ -2,7 +2,7 @@
 
 from awesom_o_robot.srv import MotorServiceValues, MotorServiceValuesResponse
 from awesom_o_robot.msg import MotorValues
-from time import time
+from datetime import datetime, timedelta
 
 import rospy
 
@@ -10,19 +10,19 @@ import rospy
 pub = rospy.Publisher('motor_values', MotorValues, queue_size = 10)
 
 def handle_motor_drive_forward(req):
-    print(f'Driving forward for {req.duration} seconds with speed {req.speed}')
+    print(f'Driving forward for {abs(req.duration)} seconds with speed {req.speed}')
 
     motorValues = MotorValues()
-    motorValues.speedLeft = req.speed
-    motorValues.speedRight = req.speed
+    motorValues.speedLeft = abs(req.speed)
+    motorValues.speedRight = abs(req.speed)
 
-    t_end = time() + req.duration
+    t_end = datetime.now() + timedelta(milliseconds=abs(req.duration))
 
     pub.publish(motorValues)
 
     stopped = False
     while not stopped:
-        if time() >= t_end:
+        if datetime.now() >= t_end:
             motorValues.speedLeft = 0
             motorValues.speedRight = 0
             pub.publish(motorValues)

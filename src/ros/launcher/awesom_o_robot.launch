@@ -11,4 +11,5 @@
   <node name="motor_turn_forward_server" pkg="awesom_o_robot" type="motor_turn_forward_server.py" />
   <node name="motor_turn_backward_server" pkg="awesom_o_robot" type="motor_turn_backward_server.py" />
   <node name="line_sensor" pkg="awesom_o_robot" type="line_sensor.py" />
+  <node name="speed_detector" pkg="awesom_o_robot" type="speed_detector.py" />
 </launch>

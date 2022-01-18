@@ -35,9 +35,7 @@ class LineSensors():
         rate = rospy.Rate(10) # 10hz
 
         while not rospy.is_shutdown():
-            #print(self.irLeftLane())
             self.line_values.leftLaneDetected = self.irLeftLane()
-            print(self.irRightLane())
             self.line_values.rightLaneDetected = self.irRightLane()
             pub.publish(self.line_values)
             rate.sleep()

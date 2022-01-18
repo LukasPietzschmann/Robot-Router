@@ -51,6 +51,7 @@ add_message_files(
   FILES
   MotorValues.msg
   LineValues.msg
+  Speed.msg
 )
 
 # Generate services in the 'srv' folder
@@ -179,6 +180,7 @@ catkin_install_python(PROGRAMS
   scripts/motor_turn_backward_server.py
   scripts/motor_turn_backward_client.py
   scripts/line_sensor.py
+  scripts/speed_detector.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

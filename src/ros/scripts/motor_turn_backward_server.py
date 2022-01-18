@@ -2,7 +2,7 @@
 
 from awesom_o_robot.srv import MotorCurveServiceValues, MotorCurveServiceValuesResponse
 from awesom_o_robot.msg import MotorValues
-from time import time
+from datetime import datetime, timedelta
 
 import rospy
 
@@ -10,19 +10,19 @@ import rospy
 pub = rospy.Publisher('motor_values', MotorValues, queue_size = 10)
 
 def handle_motor_turn_backward(req):
-    print(f'Driving backward turn for {req.duration} seconds with left speed {req.speedLeft} and right speed {req.speedRight}')
+    print(f'Driving backward turn for {abs(req.duration)} seconds with left speed {abs(req.speedLeft)} and right speed {abs(req.speedRight)}')
 
     motorValues = MotorValues()
-    motorValues.speedLeft = - req.speedLeft
-    motorValues.speedRight = - req.speedRight
+    motorValues.speedLeft = - abs(req.speedLeft)
+    motorValues.speedRight = - abs(req.speedRight)
 
-    t_end = time() + req.duration
+    t_end = datetime.now() + timedelta(milliseconds=abs(req.duration))
 
     pub.publish(motorValues)
 
     stopped = False
     while not stopped:
-        if time() >= t_end:
+        if datetime.now() >= t_end:
             motorValues.speedLeft = 0
             motorValues.speedRight = 0
             pub.publish(motorValues)
