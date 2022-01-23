@@ -51,7 +51,7 @@ class TurnInDirectionBlockState
   Widget render() {
     return Row(
       children: <Widget>[
-        const Text('Drive '),
+        const Text('Turn '),
         NumberProvider(onSubmit: (int num) {
           setState(() {
             steps = num;

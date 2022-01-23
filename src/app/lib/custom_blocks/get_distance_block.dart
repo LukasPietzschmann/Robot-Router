@@ -33,7 +33,6 @@ class GetDistanceBlockView extends BlockView<GetDistanceBlock> {
 class GetDistanceBlockState extends BlockViewState<GetDistanceBlockView> {
   @override
   Widget render() {
-    return Transform.rotate(
-        angle: 90 * pi / 180, child: const Icon(Icons.unfold_more_rounded));
+    return const Icon(Icons.radar_rounded);
   }
 }

@@ -65,7 +65,9 @@ class _SettingsViewState extends State<SettingsView> {
                                 title: const Text('Enter IP'),
                                 actions: <TextField>[
                                   TextField(
-                                      keyboardType: TextInputType.number,
+                                      keyboardType:
+                                          const TextInputType.numberWithOptions(
+                                              decimal: true),
                                       decoration: InputDecoration(
                                           border: const OutlineInputBorder(),
                                           labelText: 'IP Addresse',
