@@ -6,6 +6,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ws_wrapper/rosbridge.dart';
 
+class LogsView extends StatefulWidget {
+  LogsView({Key? key}) : super(key: key) {
+    rb.connect('87.183.50.244', 9090);
+  }
+
+  final Rosbridge rb = Rosbridge();
+
+  @override
+  _LogsViewState createState() => _LogsViewState();
+}
+
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
   static const String IP_KEY = 'IP';
@@ -102,17 +113,6 @@ class _SettingsViewState extends State<SettingsView> {
   }
 }
 
-class LogsView extends StatefulWidget {
-  LogsView({Key? key}) : super(key: key) {
-    rb.connect('87.183.50.244', 9090);
-  }
-
-  final Rosbridge rb = Rosbridge();
-
-  @override
-  _LogsViewState createState() => _LogsViewState();
-}
-
 class _LogsViewState extends State<LogsView> {
   List<String> _events = <String>[];
 
@@ -128,6 +128,12 @@ class _LogsViewState extends State<LogsView> {
           })
         });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.rb.closeConnection();
+    super.dispose();
   }
 
   @override
