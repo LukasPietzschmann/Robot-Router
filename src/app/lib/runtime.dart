@@ -8,7 +8,6 @@ import 'package:robot_router/custom_blocks/get_distance_block.dart';
 import 'package:robot_router/custom_blocks/if_block.dart';
 import 'package:robot_router/custom_blocks/literal_block.dart';
 import 'package:robot_router/custom_blocks/move_head_block.dart';
-import 'package:robot_router/custom_blocks/test_block.dart';
 import 'package:robot_router/custom_blocks/turn_in_direction_block.dart';
 import 'package:robot_router/custom_blocks/while_block.dart';
 import 'package:robot_router/ws_wrapper/rosbridge.dart';
@@ -58,11 +57,6 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
 
   @override
   Future<_BlockReturnValue> visitCommentBlock(CommentBlock commentBlock) async {
-    return _BlockReturnValue.boolean(false);
-  }
-
-  @override
-  Future<_BlockReturnValue> visitTestBlock(TestBlock testBlock) async {
     return _BlockReturnValue.boolean(false);
   }
 

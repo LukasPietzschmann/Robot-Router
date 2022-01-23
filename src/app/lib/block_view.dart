@@ -5,7 +5,6 @@ import 'package:robot_router/custom_blocks/drive_in_direction_block.dart';
 import 'package:robot_router/custom_blocks/get_distance_block.dart';
 import 'package:robot_router/custom_blocks/literal_block.dart';
 import 'package:robot_router/custom_blocks/move_head_block.dart';
-import 'package:robot_router/custom_blocks/test_block.dart';
 import 'package:robot_router/custom_blocks/turn_in_direction_block.dart';
 import 'package:robot_router/custom_blocks/while_block.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
@@ -70,7 +69,6 @@ Future<Block?> selectBlockFromList(BuildContext context,
 }
 
 abstract class BlockVisitor<T> {
-  Future<T> visitTestBlock(TestBlock testBlock);
   Future<T> visitCommentBlock(CommentBlock commentBlock);
   Future<T> visitWhileBlock(WhileBlock whileBlock);
   Future<T> visitIfBlock(IfBlock ifBlock);
@@ -99,7 +97,6 @@ abstract class Block {
 
   static List<Block> allBlocks() {
     return <Block>[
-      TestBlock(),
       CommentBlock(),
       WhileBlock(),
       IfBlock(),
