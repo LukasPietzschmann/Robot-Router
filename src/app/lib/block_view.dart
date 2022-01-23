@@ -11,13 +11,12 @@ import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 import 'custom_blocks/if_block.dart';
 
-enum BlockType { t_action, t_passive, t_event, t_control, t_expr }
+enum BlockType { t_action, t_passive, t_control, t_expr }
 
 Future<Block?> selectBlockFromList(BuildContext context,
     {List<BlockType> desiredTypes = const <BlockType>[
       BlockType.t_action,
       BlockType.t_passive,
-      BlockType.t_event,
       BlockType.t_control,
       BlockType.t_expr
     ]}) {
@@ -89,9 +88,17 @@ abstract class Block {
     return <String>[
       'Action Block',
       'Passive Block',
-      'Event Block',
       'Control Block',
       'Expression Block'
+    ][type.index];
+  }
+
+  Color get accent {
+    return <Color>[
+      const Color(0xFFf1c5c5),
+      const Color(0xFFD8D3CD),
+      const Color(0xFFE5EDB7),
+      const Color(0xFFFAF0AF)
     ][type.index];
   }
 
@@ -141,6 +148,7 @@ abstract class BlockViewState<B extends BlockView> extends State<B>
   Widget build(BuildContext context) {
     super.build(context);
     return Card(
+      color: widget.block.accent,
       margin: const EdgeInsets.all(10),
       shape: ContinuousRectangleBorder(
         side: BorderSide(
