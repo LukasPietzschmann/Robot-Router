@@ -9,6 +9,7 @@ import 'package:robot_router/custom_blocks/if_block.dart';
 import 'package:robot_router/custom_blocks/literal_block.dart';
 import 'package:robot_router/custom_blocks/move_head_block.dart';
 import 'package:robot_router/custom_blocks/test_block.dart';
+import 'package:robot_router/custom_blocks/turn_in_direction_block.dart';
 import 'package:robot_router/custom_blocks/while_block.dart';
 import 'package:robot_router/ws_wrapper/rosbridge.dart';
 
@@ -122,7 +123,6 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
   @override
   Future<_BlockReturnValue> visitDriveInDirectionBlock(
       DriveInDirectionBlock driveInDirectionBlock) async {
-    print("hiii");
     late Topic t;
     if (driveInDirectionBlock.direction == Direction.forward) {
       t = Topic(rb, '/motor_drive_forward', 'awesom_o_robot/MotorServiceValues',
@@ -149,7 +149,6 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
     } else {
       t = Topic(rb, '/tilt_servo_angle', '/std_msgs/Int16');
     }
-    print(moveHeadBlock.degrees);
     t.publish({'data': moveHeadBlock.degrees});
     await Future.delayed(const Duration(milliseconds: 500));
     return _BlockReturnValue.boolean(false);
@@ -163,5 +162,21 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
     String res = await Topic(rbs2, '/sonar_range', 'sensor_msgs/Range')
         .subscribeAndGetFirst();
     return _BlockReturnValue.number(jsonDecode(res)['msg']['range'] as double);
+  }
+
+  @override
+  Future<_BlockReturnValue> visitTurnInDirectionBlock(
+      TurnInDirectionBlock turnInDirectionBlock) async {
+    late Topic t;
+    if (turnInDirectionBlock.direction == TurnDirection.left) {
+      t = Topic(
+          rb, '/motor_rotate_left', 'awesom_o_robot/MotorServiceValues', true);
+    } else {
+      t = Topic(
+          rb, '/motor_rotate_right', 'awesom_o_robot/MotorServiceValues', true);
+    }
+    t.publish({'speed': 100, 'duration': turnInDirectionBlock.steps});
+    await Future.delayed(Duration(seconds: turnInDirectionBlock.steps!));
+    return _BlockReturnValue.boolean(false);
   }
 }
