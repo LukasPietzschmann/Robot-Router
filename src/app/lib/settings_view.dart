@@ -6,6 +6,7 @@ import 'logs_view.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
+  static const String IP_KEY = 'IP';
 
   @override
   _SettingsViewState createState() => _SettingsViewState();
@@ -16,17 +17,23 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   void initState() {
-    SharedPreferences.setMockInitialValues({});
-    internal() async {
-      SharedPreferences sp = await SharedPreferences.getInstance();
-      setState(() {
-        _ip = sp.getString('IP') ?? 'Not Set';
-      });
-    }
-
-    internal();
-
     super.initState();
+    _loadIp();
+  }
+
+  void _loadIp() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _ip = (prefs.getString(SettingsView.IP_KEY) ?? 'Not set');
+    });
+  }
+
+  void _setIp(String ip) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _ip = ip;
+      prefs.setString(SettingsView.IP_KEY, _ip);
+    });
   }
 
   @override
@@ -56,24 +63,17 @@ class _SettingsViewState extends State<SettingsView> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: const Text('Enter IP'),
-                                actions: <Widget>[
+                                actions: <TextField>[
                                   TextField(
-                                      decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          labelText: 'IP Addresse'),
-                                      onChanged: (String newString) =>
-                                          setState(() {
-                                            _ip = newString;
-                                          })),
-                                  TextButton(
-                                    onPressed: () {
-                                      SharedPreferences.getInstance().then(
-                                          (SharedPreferences sp) =>
-                                              sp.setString('IP', _ip));
-                                      Navigator.pop(context, false);
-                                    },
-                                    child: const Text('Confirm'),
-                                  )
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                          border: const OutlineInputBorder(),
+                                          labelText: 'IP Addresse',
+                                          hintText: _ip),
+                                      onSubmitted: (String newString) {
+                                        _setIp(newString);
+                                        Navigator.pop(context);
+                                      }),
                                 ],
                               );
                             });

@@ -1,12 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-
+import 'package:robot_router/settings_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'ws_wrapper/rosbridge.dart';
 
 class LogsView extends StatefulWidget {
   LogsView({Key? key}) : super(key: key) {
-    rb.connect('87.183.50.244', 9090);
+    SharedPreferences.getInstance().then((SharedPreferences sp) {
+      rb.connect(
+        sp.getString(SettingsView.IP_KEY)!,
+        9090,
+      );
+    });
   }
 
   final Rosbridge rb = Rosbridge();

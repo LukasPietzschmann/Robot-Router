@@ -10,7 +10,9 @@ import 'package:robot_router/custom_blocks/literal_block.dart';
 import 'package:robot_router/custom_blocks/move_head_block.dart';
 import 'package:robot_router/custom_blocks/turn_in_direction_block.dart';
 import 'package:robot_router/custom_blocks/while_block.dart';
+import 'package:robot_router/settings_view.dart';
 import 'package:robot_router/ws_wrapper/rosbridge.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class _BlockReturnValue {
   factory _BlockReturnValue.boolean(bool value) =>
@@ -48,7 +50,11 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
   final Rosbridge rb = Rosbridge();
 
   void exec(List<Block> blocks) async {
-    rb.connect('87.183.50.244', 9090);
+    final SharedPreferences sp = await SharedPreferences.getInstance();
+    rb.connect(
+      sp.getString(SettingsView.IP_KEY)!,
+      9090,
+    );
     for (Block block in blocks) {
       await block.accept(this);
     }
