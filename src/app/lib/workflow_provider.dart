@@ -19,8 +19,8 @@ Future<File> get _workflow_file async {
 
 List<Workflow> get workflows {
   return <Workflow>[
-    Workflow.fromJson({'name': 'WF1', 'color': Colors.blue.toHex()}),
-    Workflow.fromJson({'name': 'WF2', 'color': Colors.yellow.toHex()}),
-    Workflow.fromJson({'name': 'WF3', 'color': Colors.red.toHex()})
+    Workflow.fromJson({'name': 'Test Workflow', 'color': Colors.blue.toHex()}),
+    //Workflow.fromJson({'name': 'WF2', 'color': Colors.yellow.toHex()}),
+    //Workflow.fromJson({'name': 'WF3', 'color': Colors.red.toHex()})
   ];
-}
+} //87.183.50.244
