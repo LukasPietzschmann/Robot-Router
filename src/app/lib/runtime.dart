@@ -49,7 +49,7 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
 
   final Rosbridge rb = Rosbridge();
 
-  void exec(List<Block> blocks) async {
+  Future<void> exec(List<Block> blocks) async {
     final SharedPreferences sp = await SharedPreferences.getInstance();
     rb.connect(
       sp.getString(SettingsView.IP_KEY)!,
@@ -59,6 +59,7 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
       await block.accept(this);
     }
     rb.closeConnection();
+    return;
   }
 
   @override

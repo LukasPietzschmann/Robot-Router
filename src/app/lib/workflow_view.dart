@@ -3,6 +3,8 @@ import 'package:robot_router/block_view.dart';
 import 'package:robot_router/runtime.dart';
 import 'package:robot_router/workflow.dart';
 
+import 'settings_view.dart';
+
 class WorkflowView extends StatefulWidget {
   const WorkflowView({required this.workflow, Key? key}) : super(key: key);
 
@@ -16,6 +18,7 @@ class _WorkflowViewState extends State<WorkflowView> {
   List<BlockView> _blocks = <BlockView>[];
   final ScrollController _scrollController = ScrollController();
   bool _needsScroll = false;
+  bool _isRunning = false;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,9 @@ class _WorkflowViewState extends State<WorkflowView> {
                 final BlockView item = _blocks[index];
                 return Dismissible(
                     key: ObjectKey(item),
-                    direction: DismissDirection.endToStart,
+                    direction: _isRunning
+                        ? DismissDirection.none
+                        : DismissDirection.endToStart,
                     background: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Card(
@@ -100,19 +105,34 @@ class _WorkflowViewState extends State<WorkflowView> {
             children: <Widget>[
               ElevatedButton(
                   onPressed: () {
-                    selectBlockFromList(context).then((Block? block) => {
-                          block != null
-                              ? setState(() {
-                                  _blocks.add(block.construct());
-                                  _needsScroll = true;
-                                })
-                              : ''
-                        });
+                    if (_isRunning) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => LogsView()));
+                    } else {
+                      selectBlockFromList(context).then((Block? block) => {
+                            block != null
+                                ? setState(() {
+                                    _blocks.add(block.construct());
+                                    _needsScroll = true;
+                                  })
+                                : ''
+                          });
+                    }
                   },
-                  child: const Text('Add Block')),
+                  child: Text(_isRunning ? 'Show logs' : 'Add Block')),
               IconButton(
-                onPressed: () => Runtime.the().exec(
-                    _blocks.map((BlockView block) => block.block).toList()),
+                onPressed: () async {
+                  setState(() {
+                    _isRunning = true;
+                  });
+                  await Runtime.the().exec(
+                      _blocks.map((BlockView block) => block.block).toList());
+                  setState(() {
+                    _isRunning = false;
+                  });
+                },
                 icon: const Icon(Icons.send),
                 color: Colors.indigo,
               )
