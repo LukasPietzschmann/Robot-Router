@@ -10,7 +10,7 @@ class MoveHeadBlock extends Block {
   int? degrees;
 
   @override
-  String get name => 'Move head Block';
+  String get name => 'Move head';
 
   @override
   BlockType get type => BlockType.t_action;

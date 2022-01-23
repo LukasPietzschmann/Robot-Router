@@ -10,7 +10,7 @@ class TurnInDirectionBlock extends Block {
   int? steps;
 
   @override
-  String get name => 'Turn in direction Block';
+  String get name => 'Turn in direction';
 
   @override
   BlockType get type => BlockType.t_action;

@@ -7,7 +7,7 @@ class CommentBlock extends Block {
   String comment = '';
 
   @override
-  String get name => 'Comment Block';
+  String get name => 'Comment';
 
   @override
   BlockType get type => BlockType.t_passive;

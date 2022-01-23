@@ -10,7 +10,7 @@ class DriveInDirectionBlock extends Block {
   int? steps;
 
   @override
-  String get name => 'Drive in direction Block';
+  String get name => 'Drive in direction';
 
   @override
   BlockType get type => BlockType.t_action;

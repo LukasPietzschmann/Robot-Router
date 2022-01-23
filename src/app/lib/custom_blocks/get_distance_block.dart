@@ -6,7 +6,7 @@ import '../block_view.dart';
 
 class GetDistanceBlock extends Block {
   @override
-  String get name => 'Get distance Block';
+  String get name => 'Get distance';
 
   @override
   BlockType get type => BlockType.t_expr;
