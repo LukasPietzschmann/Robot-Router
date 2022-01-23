@@ -131,10 +131,7 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
       t = Topic(rb, '/motor_drive_backward',
           'awesom_o_robot/MotorServiceValues', true);
     }
-    t.publish({
-      'speed': 100,
-      'duration': (driveInDirectionBlock.steps!).round() * 1000
-    });
+    t.publish({'speed': 100, 'duration': driveInDirectionBlock.steps});
     await Future.delayed(
         Duration(seconds: (driveInDirectionBlock.steps!).round()));
     return _BlockReturnValue.boolean(false);
