@@ -45,7 +45,6 @@ class LiteralBlockState extends BlockViewState<LiteralBlockView> {
         literal = num.toDouble();
       });
       widget.block.literal = num.toDouble();
-      print(widget.block.literal);
     });
   }
 }

@@ -71,7 +71,6 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
   Future<_BlockReturnValue> visitWhileBlock(WhileBlock whileBlock) async {
     _BlockReturnValue condition = await whileBlock.condBlock!.accept(this);
     assert(condition.hasConditionalValue);
-    print(condition.boolVal ? 'true' : 'false');
     while (condition.boolVal) {
       await whileBlock.thenBlock!.accept(this);
       condition = await whileBlock.condBlock!.accept(this);
@@ -96,7 +95,6 @@ class Runtime extends BlockVisitor<_BlockReturnValue> {
       ComparisonBlock comparisonBlock) async {
     _BlockReturnValue lhs = await comparisonBlock.lhs!.accept(this);
     _BlockReturnValue rhs = await comparisonBlock.rhs!.accept(this);
-    print('lhs: ' + lhs.numVal.toString() + ' rhs: ' + rhs.numVal.toString());
 
     switch (comparisonBlock.selectedOper) {
       case '<':
